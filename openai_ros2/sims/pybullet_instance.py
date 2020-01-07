@@ -14,6 +14,7 @@ from rclpy.qos import qos_profile_services_default, qos_profile_parameters
 
 from ros2_control_interfaces.msg import JointControl
 from sensor_msgs.msg import JointState
+from std_msgs.msg import Float32
 
 
 class WorldParams:
@@ -38,6 +39,7 @@ class Bullet(object):
         self._control_sub = self.node.create_subscription(JointControl, joint_control_topic,
                                                           self.__control_subscription_callback, qos_profile_parameters)
         self._joint_state_pub = self.node.create_publisher(JointState, '/joint_states', qos_profile_parameters)
+        #self._sim_time_pub = self.node.create_publisher(Float32, '/sim_time', qos_profile_parameters)
 
         # Pybullet
         self.sim_time = 0.0  # must be updated on each call of stepSimulation
@@ -106,6 +108,8 @@ class Bullet(object):
             state_msg = JointState()
             state_msg.position = []
             state_msg.velocity = []
+            # time_msg = Float32()
+            # time_msg.data = self.sim_time
             for joint in self.motor_joints:
                 joint_angle, joint_velocity, _, _ = bullet.getJointState(self.robotID, joint)
                 state_msg.position.append(joint_angle)
@@ -113,6 +117,8 @@ class Bullet(object):
             state_msg.header.stamp.sec = math.floor(self.sim_time)
             state_msg.header.stamp.nanosec = int((self.sim_time * 1000000000) % 1000000000)
             self._joint_state_pub.publish(state_msg)
+            # self._sim_time_pub.publish(time_msg)
+            rclpy.spin_once(self.node, timeout_sec=0.01)
 
     def reset(self):
         # TODO : reset world. (does not apper to be required at the moment)

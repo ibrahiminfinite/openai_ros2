@@ -27,7 +27,7 @@ class LobotArmPybullet(LobotArmBase):
         super().__init__(node)
         world_params = WorldParams()
         world_params.urdf_path = 'plane.urdf'
-        world_params.time_step = 1 / 1000
+        world_params.time_step = 1 / 500
         print(f'Current directory: {os.getcwd()}')
         self.bullet = Bullet(node, use_gui=True, robot_urdf_path='/home/dark/biped_ros2/src/openai_ros2/openai_ros2/robots/lobot_arm/lobot_arm_org.urdf', world=world_params)
         joint_control_topic = '/arm_standalone/control'
@@ -52,16 +52,8 @@ class LobotArmPybullet(LobotArmBase):
         msg.header.stamp = self._current_sim_time.to_msg()
         self._control_pub.publish(msg)
         self.bullet.step()
-        rclpy.spin_once(self.node, timeout_sec=0.1)
         rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
-        rclpy.spin_once(self.node, timeout_sec=0.05)
+
         
 
     def get_action_space(self):
