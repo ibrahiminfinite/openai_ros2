@@ -34,11 +34,6 @@ class LobotArmPybullet(LobotArmBase):
         self._control_pub = self.node.create_publisher(JointControl, joint_control_topic, qos_profile_parameters)
         self._target_joint_state = numpy.array([0.0, 0.0, 0.0])
 
-        # spin_thread = threading.Thread(target = spin_node, kwargs = {'node': self.node})
-        # spin_thread.daemon = True
-        # spin_thread.start()
-
-
 
     def set_action(self, action: numpy.ndarray):
         assert len(action) == 3, f'{len(action)} actions passed to LobotArmSim, expected: 3'
